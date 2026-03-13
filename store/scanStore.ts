@@ -13,6 +13,7 @@ interface ScanState {
   progress: number;
   summary: Summary;
   start: () => void;
+  setProgress: (progress: number) => void;
   setSummary: (partial: Partial<Summary>) => void;
   finish: () => void;
   reset: () => void;
@@ -29,6 +30,7 @@ export const useScanStore = create<ScanState>((set) => ({
   progress: 0,
   summary: emptySummary,
   start: () => set({ status: "running", progress: 0, summary: emptySummary }),
+  setProgress: (progress) => set({ progress }),
   setSummary: (partial) =>
     set((state) => ({
       summary: { ...state.summary, ...partial },

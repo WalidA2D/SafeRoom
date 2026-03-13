@@ -5,14 +5,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "#F2F4F6",
+        background: "#F3F9D2",
         surface: "#FFFFFF",
-        primary: "#0D9488",
-        primaryForeground: "#FFFFFF",
-        muted: "#F1F5F9",
-        mutedForeground: "#64748B",
-        foreground: "#0F172A",
-        border: "#E2E8F0",
+        primary: "#92B4A7",
+        primaryForeground: "#1F2937",
+        muted: "#BDC4A7",
+        mutedForeground: "#2F2F2F",
+        foreground: "#2F2F2F",
+        border: "#D1D5DB",
       },
     },
   },
