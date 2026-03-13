@@ -1,0 +1,661 @@
+{
+  "users": {
+    "user_c2534f87-23b9-497e-8916-c36946532a83": {
+      "uid": "user_c2534f87-23b9-497e-8916-c36946532a83",
+      "email": "test_20260313141851@saferoom.local",
+      "displayName": "Test User",
+      "accountType": "premium",
+      "createdAt": "2026-03-13T13:18:53.823Z",
+      "lastLogin": "2026-03-13T13:18:53.866Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 999,
+      "scansUsedToday": 1,
+      "isPremium": true,
+      "premiumExpiresAt": "2026-04-12T13:18:53.862Z",
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": true
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {
+        "scan_32720ee6-b6cf-4d37-932c-169e3527b58c": {
+          "scanId": "scan_32720ee6-b6cf-4d37-932c-169e3527b58c",
+          "userId": "user_c2534f87-23b9-497e-8916-c36946532a83",
+          "createdAt": "2026-03-13T13:18:53.866Z",
+          "finishedAt": "2026-03-13T13:18:53.866Z",
+          "location": {
+            "label": "Hotel Test",
+            "city": "Paris",
+            "country": "France"
+          },
+          "networkSummary": {
+            "detectedDevices": 4,
+            "suspiciousDevices": 4
+          },
+          "bluetoothSummary": {
+            "detectedDevices": 4,
+            "suspiciousDevices": 3
+          },
+          "visualSummary": {
+            "flags": 1
+          },
+          "signalsCount": 8,
+          "riskScore": 100,
+          "riskLevel": "critical",
+          "reasons": [
+            "Des equipements reseau inhabituels ont ete reperes.",
+            "Des signaux Bluetooth puissants ou inconnus ont ete detectes.",
+            "Des points de controle visuels meritent une verification manuelle."
+          ],
+          "recommendations": [
+            "Utilisez ce score comme un indicateur d'inspection et non comme une preuve absolue.",
+            "Inspectez la piece plus en detail et contactez l'hote si un doute persiste.",
+            "Comparez les appareils detectes avec vos equipements de confiance.",
+            "Prenez des photos et ajoutez des notes pour garder une trace des anomalies."
+          ],
+          "reportLocked": false,
+          "inspection": {
+            "inspectionId": "inspection_d25f603c-1349-49f7-9a58-a822e29f45e8",
+            "createdAt": "2026-03-13T13:18:53.878Z",
+            "notes": "Test inspection",
+            "checklist": [
+              {
+                "id": "smoke",
+                "label": "Smoke",
+                "checked": true
+              }
+            ],
+            "imagePath": "/uploads/inspection_d7676689-ee34-45b0-9867-639ceb046be2.jpg",
+            "linkedScanId": "scan_32720ee6-b6cf-4d37-932c-169e3527b58c"
+          },
+          "notes": "",
+          "signals": [
+            {
+              "signalId": "signal_2648acaa-e672-4cd3-9892-8d2c65715c3f",
+              "type": "wifi",
+              "deviceName": "Router Node",
+              "macAddress": "41:3B:A9:C7:E0:C0",
+              "vendor": "Unknown",
+              "category": "unknown",
+              "signalStrength": -43,
+              "suspicionLevel": "medium",
+              "reason": "Signal inconnu detecte avec une puissance notable.",
+              "isTrusted": false,
+              "detectedAt": "2026-03-13T13:18:53.865Z"
+            },
+            {
+              "signalId": "signal_5d750718-2218-4021-8156-a4773fe911b1",
+              "type": "wifi",
+              "deviceName": "Router Node",
+              "macAddress": "3C:7A:64:89:CF:43",
+              "vendor": "Belkin",
+              "category": "smarthome",
+              "signalStrength": -32,
+              "suspicionLevel": "medium",
+              "reason": "Signal inconnu detecte avec une puissance notable.",
+              "isTrusted": false,
+              "detectedAt": "2026-03-13T13:18:53.865Z"
+            },
+            {
+              "signalId": "signal_98ffb0e8-05a3-4959-b5a8-54c2d291c5fd",
+              "type": "wifi",
+              "deviceName": "Router Node",
+              "macAddress": "17:E7:FF:B7:33:FF",
+              "vendor": "Unknown",
+              "category": "unknown",
+              "signalStrength": -47,
+              "suspicionLevel": "medium",
+              "reason": "Signal inconnu detecte avec une puissance notable.",
+              "isTrusted": false,
+              "detectedAt": "2026-03-13T13:18:53.865Z"
+            },
+            {
+              "signalId": "signal_d0b1af0b-4524-4c26-8568-3629cb53ef45",
+              "type": "wifi",
+              "deviceName": "Smart Plug",
+              "macAddress": "04:03:7C:31:33:CE",
+              "vendor": "Unknown",
+              "category": "unknown",
+              "signalStrength": -90,
+              "suspicionLevel": "high",
+              "reason": "Signal atypique detecte avec un profil potentiellement sensible.",
+              "isTrusted": false,
+              "detectedAt": "2026-03-13T13:18:53.865Z"
+            },
+            {
+              "signalId": "signal_356be27d-fe71-44f1-8412-5d5ccf6dcfb4",
+              "type": "bluetooth",
+              "deviceName": "AirTag-like Beacon",
+              "macAddress": "3C:7A:64:91:DD:AC",
+              "vendor": "Belkin",
+              "category": "smarthome",
+              "signalStrength": -76,
+              "suspicionLevel": "medium",
+              "reason": "Signal inconnu detecte avec une puissance notable.",
+              "isTrusted": false,
+              "detectedAt": "2026-03-13T13:18:53.865Z"
+            },
+            {
+              "signalId": "signal_3fef33f1-3436-485d-ae9a-86fd4dd494e5",
+              "type": "bluetooth",
+              "deviceName": "AirTag-like Beacon",
+              "macAddress": "5B:A5:84:05:EF:62",
+              "vendor": "Unknown",
+              "category": "unknown",
+              "signalStrength": -92,
+              "suspicionLevel": "medium",
+              "reason": "Signal inconnu detecte avec une puissance notable.",
+              "isTrusted": false,
+              "detectedAt": "2026-03-13T13:18:53.865Z"
+            },
+            {
+              "signalId": "signal_a5ebb6ea-0a49-4aad-b36d-11478e84835f",
+              "type": "bluetooth",
+              "deviceName": "Unknown Bluetooth",
+              "macAddress": "00:1A:11:1E:9C:15",
+              "vendor": "Cisco Systems",
+              "category": "router",
+              "signalStrength": -25,
+              "suspicionLevel": "low",
+              "reason": "Signal connu ou peu preocupant.",
+              "isTrusted": false,
+              "detectedAt": "2026-03-13T13:18:53.865Z"
+            },
+            {
+              "signalId": "signal_246fa864-f26b-4b4e-b13d-b5b2db2b2904",
+              "type": "bluetooth",
+              "deviceName": "Unknown Bluetooth",
+              "macAddress": "3C:5A:B4:15:99:21",
+              "vendor": "Hikvision",
+              "category": "ip_camera",
+              "signalStrength": -83,
+              "suspicionLevel": "medium",
+              "reason": "Signal inconnu detecte avec une puissance notable.",
+              "isTrusted": false,
+              "detectedAt": "2026-03-13T13:18:53.865Z"
+            }
+          ]
+        }
+      },
+      "pendingScans": {},
+      "visualInspections": {
+        "inspection_d25f603c-1349-49f7-9a58-a822e29f45e8": {
+          "inspectionId": "inspection_d25f603c-1349-49f7-9a58-a822e29f45e8",
+          "createdAt": "2026-03-13T13:18:53.878Z",
+          "notes": "Test inspection",
+          "checklist": [
+            {
+              "id": "smoke",
+              "label": "Smoke",
+              "checked": true
+            }
+          ],
+          "imagePath": "/uploads/inspection_d7676689-ee34-45b0-9867-639ceb046be2.jpg",
+          "linkedScanId": "scan_32720ee6-b6cf-4d37-932c-169e3527b58c"
+        }
+      },
+      "passwordHash": "47d4691881c24a2d569f1cafa00a56528b56e61c4b4d32b4701f0e997bb8c2d8b758ec6bd32de8e76e670c8bf566cd3fcdf332ead73d86d72d3d352ec3ed53ad",
+      "passwordSalt": "1d2aa497dd02a6ec6f370212af8b2f31"
+    },
+    "demo_29ae88e7-4d75-45c2-8d8d-359eed78b059": {
+      "uid": "demo_29ae88e7-4d75-45c2-8d8d-359eed78b059",
+      "email": "visitor@test.com",
+      "displayName": "Visitor User",
+      "accountType": "visitor",
+      "createdAt": "2026-03-13T13:49:03.705Z",
+      "lastLogin": "2026-03-13T13:49:03.706Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 1,
+      "scansUsedToday": 0,
+      "isPremium": false,
+      "premiumExpiresAt": null,
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": false
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {},
+      "pendingScans": {},
+      "visualInspections": {},
+      "passwordHash": "62d80df0b09c44ca47187b59fdbbcf2b60ef50d98456941437a8ff37016f47c659df220274dd37daf0251539177d7612f35a6eff9a13bde9e6dc7a0ce557ad19",
+      "passwordSalt": "7181c517aaf64ce0dfe429457db97825"
+    },
+    "demo_9eaec203-d851-4a22-9acf-7dc2f7f1ccb9": {
+      "uid": "demo_9eaec203-d851-4a22-9acf-7dc2f7f1ccb9",
+      "email": "free@test.com",
+      "displayName": "Free User",
+      "accountType": "free",
+      "createdAt": "2026-03-13T13:49:03.744Z",
+      "lastLogin": "2026-03-13T13:49:03.744Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 5,
+      "scansUsedToday": 0,
+      "isPremium": false,
+      "premiumExpiresAt": null,
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": false
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {},
+      "pendingScans": {},
+      "visualInspections": {},
+      "passwordHash": "f54dbfb383816d4999fad6bb757b6ea193dbab4e0f5edf768c0110cfe32a45aa3c6dbb548e453d40353d95fb0f41bf49f6f5f5ef31ed6458c4cf2528543e94ce",
+      "passwordSalt": "4f1f7f5597913bcbb1a9b010faa8278d"
+    },
+    "demo_8c74cb6c-7497-4b98-bef2-608a90d1e144": {
+      "uid": "demo_8c74cb6c-7497-4b98-bef2-608a90d1e144",
+      "email": "premium@test.com",
+      "displayName": "Premium User",
+      "accountType": "premium",
+      "createdAt": "2026-03-13T13:49:03.784Z",
+      "lastLogin": "2026-03-13T13:49:03.784Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 999,
+      "scansUsedToday": 0,
+      "isPremium": true,
+      "premiumExpiresAt": "2026-04-12T13:49:03.784Z",
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": true
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {},
+      "pendingScans": {},
+      "visualInspections": {},
+      "passwordHash": "06495f88194606738b014b74de54da226a5e3b85e93d6dd9fb96d62663a1ead0cd2b22e554f1056d7500449408792ea48f679048e09eee35634518bd0976d98c",
+      "passwordSalt": "b101aa6aa8d271e7f2ff7e7d205526f3"
+    },
+    "demo_ca6a9342-52c7-4682-b017-1c4a4ce83087": {
+      "uid": "demo_ca6a9342-52c7-4682-b017-1c4a4ce83087",
+      "email": "user4@test.com",
+      "displayName": "User 4",
+      "accountType": "free",
+      "createdAt": "2026-03-13T13:49:03.823Z",
+      "lastLogin": "2026-03-13T13:49:03.823Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 5,
+      "scansUsedToday": 0,
+      "isPremium": false,
+      "premiumExpiresAt": null,
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": false
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {},
+      "pendingScans": {},
+      "visualInspections": {},
+      "passwordHash": "8947e9576fb282b744c4bd3f2aaa79add734afc61de08c0905807139ab54814cdaeb12b107d1b9def61d4c6bffad563affc9902784e8a2fff832b1d29bdb6c56",
+      "passwordSalt": "a9bf9594e929815467102c48c626582d"
+    },
+    "demo_6901c326-c499-4682-852c-a26eebee0442": {
+      "uid": "demo_6901c326-c499-4682-852c-a26eebee0442",
+      "email": "user5@test.com",
+      "displayName": "User 5",
+      "accountType": "premium",
+      "createdAt": "2026-03-13T13:49:03.862Z",
+      "lastLogin": "2026-03-13T13:49:03.862Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 999,
+      "scansUsedToday": 0,
+      "isPremium": true,
+      "premiumExpiresAt": "2026-04-12T13:49:03.862Z",
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": true
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {},
+      "pendingScans": {},
+      "visualInspections": {},
+      "passwordHash": "eccd00fec5404b21bd98bc2ddf7adb88eedcc664a8f22191e38415bd623cb188e344b39c4d8f4cf1055d7ec9b565b000cf8c54861e84d9e1865b4ebe9f4ba39c",
+      "passwordSalt": "e526fca5149e944df16c9e0cbf1597d3"
+    },
+    "demo_2c3963f1-23ec-439b-8416-24770beef744": {
+      "uid": "demo_2c3963f1-23ec-439b-8416-24770beef744",
+      "email": "user6@test.com",
+      "displayName": "User 6",
+      "accountType": "visitor",
+      "createdAt": "2026-03-13T13:49:03.901Z",
+      "lastLogin": "2026-03-13T13:49:03.901Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 1,
+      "scansUsedToday": 0,
+      "isPremium": false,
+      "premiumExpiresAt": null,
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": false
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {},
+      "pendingScans": {},
+      "visualInspections": {},
+      "passwordHash": "dda197350af5a2d88cb2c8964348333e6d80ec3995b22abad0ba3f9e1ffbcc354cdb6888432d34114f8639e2f5434920ff8c2c05e3151c667479fa1363e485e7",
+      "passwordSalt": "533ebaf5490ee8ea62d3cb4ce4b1ee9a"
+    },
+    "demo_6a156c23-8149-45bb-b16c-84dc3d3c295c": {
+      "uid": "demo_6a156c23-8149-45bb-b16c-84dc3d3c295c",
+      "email": "user7@test.com",
+      "displayName": "User 7",
+      "accountType": "free",
+      "createdAt": "2026-03-13T13:49:03.940Z",
+      "lastLogin": "2026-03-13T13:49:03.940Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 5,
+      "scansUsedToday": 0,
+      "isPremium": false,
+      "premiumExpiresAt": null,
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": false
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {},
+      "pendingScans": {},
+      "visualInspections": {},
+      "passwordHash": "875fa34abdaa835d56955d7c17e7662768d4cb42eae3aacebce97667487a174908db792d4773c95694096fd6aaa9a0843539041c3d8356711f0a6acc8b7bdfc6",
+      "passwordSalt": "1c063e1ef0a8c0ee7679ecd6852ae0c0"
+    },
+    "demo_9a170364-b5a5-4bf3-acaf-bb89243c63fd": {
+      "uid": "demo_9a170364-b5a5-4bf3-acaf-bb89243c63fd",
+      "email": "user8@test.com",
+      "displayName": "User 8",
+      "accountType": "premium",
+      "createdAt": "2026-03-13T13:49:03.979Z",
+      "lastLogin": "2026-03-13T13:49:03.979Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 999,
+      "scansUsedToday": 0,
+      "isPremium": true,
+      "premiumExpiresAt": "2026-04-12T13:49:03.979Z",
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": true
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {},
+      "pendingScans": {},
+      "visualInspections": {},
+      "passwordHash": "e9028d505d5e89971b8c3febb37a8d8dcc370701c4a9d952c8d6116f49862544f58d8cf85b6055ffd8a7f000ca4307ff4f99d7cecf1a78f8aeb6fa70732fb30f",
+      "passwordSalt": "11c97507b5ebce21672d3b1012880e42"
+    },
+    "demo_afe0360f-057b-486d-bde4-80685e7ede96": {
+      "uid": "demo_afe0360f-057b-486d-bde4-80685e7ede96",
+      "email": "user9@test.com",
+      "displayName": "User 9",
+      "accountType": "free",
+      "createdAt": "2026-03-13T13:49:04.018Z",
+      "lastLogin": "2026-03-13T13:49:04.018Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 5,
+      "scansUsedToday": 0,
+      "isPremium": false,
+      "premiumExpiresAt": null,
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": false
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {},
+      "pendingScans": {},
+      "visualInspections": {},
+      "passwordHash": "87fd9fd7bdd7a3ab7d22df9285bce7987cc172289a628b9c23af12b2f49527be52be34a68beceff5755ec072d7be3785bf5041e26969e97779af552909d18841",
+      "passwordSalt": "71f2c20b66b93838bcf667d0944135a4"
+    },
+    "demo_c34172a1-4917-4d8f-a1a1-29130ef1cb61": {
+      "uid": "demo_c34172a1-4917-4d8f-a1a1-29130ef1cb61",
+      "email": "user10@test.com",
+      "displayName": "User 10",
+      "accountType": "visitor",
+      "createdAt": "2026-03-13T13:49:04.057Z",
+      "lastLogin": "2026-03-13T13:49:04.057Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 1,
+      "scansUsedToday": 0,
+      "isPremium": false,
+      "premiumExpiresAt": null,
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": false
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {},
+      "pendingScans": {},
+      "visualInspections": {},
+      "passwordHash": "8387d0753c1063ef5f7cbbeaafc896117b86127d8229264ea220149ae87d462a396608f3c8f4970a00b7edb9dc78425d3a370ff2bfcfce1074ea59ffff3c0766",
+      "passwordSalt": "ee4c78543630d93cde2d9d7cc164c65e"
+    },
+    "demo_ced70d90-9748-4983-9dea-5ad3f509af3c": {
+      "uid": "demo_ced70d90-9748-4983-9dea-5ad3f509af3c",
+      "email": "user11@test.com",
+      "displayName": "User 11",
+      "accountType": "premium",
+      "createdAt": "2026-03-13T13:49:04.097Z",
+      "lastLogin": "2026-03-13T13:49:04.097Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 999,
+      "scansUsedToday": 0,
+      "isPremium": true,
+      "premiumExpiresAt": "2026-04-12T13:49:04.097Z",
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": true
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {},
+      "pendingScans": {},
+      "visualInspections": {},
+      "passwordHash": "99f071d95bd29441afe82df6676041e4781cfa8f3c168b71b0c507b55540b6ba5ae5ac4c3999697676fe19886fec39c676e93de4e2fe94a6a9993fdb326ebe9b",
+      "passwordSalt": "5be2c88e20a4a80a0c99e635cb7ffe66"
+    },
+    "demo_1b822454-2cd0-4071-9fe8-80f7b71df54d": {
+      "uid": "demo_1b822454-2cd0-4071-9fe8-80f7b71df54d",
+      "email": "user12@test.com",
+      "displayName": "User 12",
+      "accountType": "free",
+      "createdAt": "2026-03-13T13:49:04.136Z",
+      "lastLogin": "2026-03-13T13:49:04.136Z",
+      "lastQuotaResetDate": "2026-03-13",
+      "scanQuotaPerDay": 5,
+      "scansUsedToday": 0,
+      "isPremium": false,
+      "premiumExpiresAt": null,
+      "preferences": {
+        "notifications": true,
+        "allowBluetoothScan": true,
+        "allowNetworkScan": true,
+        "allowCameraInspection": false
+      },
+      "consent": {
+        "analytics": true,
+        "privacyAccepted": true
+      },
+      "trustedDevices": {},
+      "scans": {},
+      "pendingScans": {},
+      "visualInspections": {},
+      "passwordHash": "08925bf26ae4f85ab3cc4f841480b1750ebc9f06bcb3b83d1315aee51be3c81923ee9d0034b2707c0c90f83cafababa4f2e31ae63a0d81e00720b75b1fc89b4d",
+      "passwordSalt": "0c51e8882e9b358dc050583bd0a971d9"
+    }
+  },
+  "sessions": {
+    "1c33761f475e862f381518c989350afb1fc0eb7efe178934403fee2a18a88eb3": {
+      "uid": "user_c2534f87-23b9-497e-8916-c36946532a83",
+      "createdAt": "2026-03-13T13:18:53.824Z",
+      "lastSeenAt": "2026-03-13T13:18:53.877Z"
+    }
+  },
+  "adsConfig": {
+    "enabled": true,
+    "provider": "demo",
+    "banner": true,
+    "interstitial": false,
+    "premiumNoAds": true
+  },
+  "scanStats": {
+    "totalScans": 1,
+    "suspiciousScans": 1,
+    "lastUpdated": "2026-03-13T13:18:53.866Z"
+  },
+  "threatSignatures": {
+    "sig_cam_wifi_01": {
+      "signatureId": "sig_cam_wifi_01",
+      "deviceType": "ip_camera",
+      "vendor": "Hikvision",
+      "keywords": [
+        "CAMERA",
+        "IPCAM",
+        "HIKVISION"
+      ],
+      "riskLevel": "high",
+      "description": "Signature proche d'une camera IP."
+    },
+    "sig_router_01": {
+      "signatureId": "sig_router_01",
+      "deviceType": "router",
+      "vendor": "Cisco",
+      "keywords": [
+        "CISCO",
+        "ROUTER",
+        "WRT"
+      ],
+      "riskLevel": "medium",
+      "description": "Routeur ou point d'acces visible."
+    },
+    "sig_voice_01": {
+      "signatureId": "sig_voice_01",
+      "deviceType": "smart_speaker",
+      "vendor": "Amazon",
+      "keywords": [
+        "ALEXA",
+        "ECHO",
+        "AMAZON"
+      ],
+      "riskLevel": "medium",
+      "description": "Assistant vocal detecte."
+    },
+    "sig_camera_other_01": {
+      "signatureId": "sig_camera_other_01",
+      "deviceType": "ip_camera",
+      "vendor": "Unknown",
+      "keywords": [
+        "CAMERA",
+        "WEB",
+        "IP"
+      ],
+      "riskLevel": "high",
+      "description": "Appareil video non identifie."
+    }
+  },
+  "vendorDatabase": {
+    "A4:12:F4": {
+      "oui": "A4:12:F4",
+      "vendorName": "Apple Inc.",
+      "deviceCategory": "smartphone"
+    },
+    "00:1A:11": {
+      "oui": "00:1A:11",
+      "vendorName": "Cisco Systems",
+      "deviceCategory": "router"
+    },
+    "3C:5A:B4": {
+      "oui": "3C:5A:B4",
+      "vendorName": "Hikvision",
+      "deviceCategory": "ip_camera"
+    },
+    "F4:5C:89": {
+      "oui": "F4:5C:89",
+      "vendorName": "Xiaomi",
+      "deviceCategory": "smartphone"
+    },
+    "BC:AE:C5": {
+      "oui": "BC:AE:C5",
+      "vendorName": "Samsung Electronics",
+      "deviceCategory": "smartphone"
+    },
+    "FC:FB:FB": {
+      "oui": "FC:FB:FB",
+      "vendorName": "Nest Labs",
+      "deviceCategory": "smarthome"
+    },
+    "3C:7A:64": {
+      "oui": "3C:7A:64",
+      "vendorName": "Belkin",
+      "deviceCategory": "smarthome"
+    }
+  }
+}

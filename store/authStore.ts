@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { apiFetch, clearToken, setToken, getToken } from "../services/api";
-import { auth } from "../services/firebase";
-import { onAuthStateChanged, User } from "firebase/auth";
+import { apiFetch, clearToken, getToken, setToken } from "../services/api";
 
 const GUEST_CHOICE_KEY = "@saferoom/guest";
 const GUEST_QUOTA_KEY = "@saferoom/guest_quota";
@@ -14,36 +12,75 @@ function todayISO() {
 
 export type PlanType = "visitor" | "free" | "premium";
 
+type BackendProfile = {
+  uid: string;
+  email: string | null;
+  accountType?: PlanType;
+  plan?: PlanType;
+  isPremium?: boolean;
+  scansUsedToday?: number;
+  scanQuotaPerDay?: number;
+  lastQuotaResetDate?: string | null;
+};
+
+type SessionUser = {
+  uid: string;
+  email: string | null;
+};
+
 interface AuthState {
   plan: PlanType;
   userId: string | null;
   userEmail: string | null;
   scansToday: number;
   lastResetDate: string | null;
+  scanLimit: number;
   isHydrated: boolean;
-  /** true quand on a restauré une session invité depuis AsyncStorage */
   hasRestoredGuest: boolean;
   setPlan: (plan: PlanType) => Promise<void>;
   setGuestQuota: (scansToday: number, lastResetDate: string) => void;
   incrementScans: () => void;
   canScan: () => boolean;
   dailyLimit: () => number;
-  /** À appeler au démarrage : restaure invité + quota depuis l’appareil */
   hydrateFromStorage: () => Promise<boolean>;
-  /** Passe en mode invité et persiste le choix + quota initial */
   startGuestSession: () => Promise<void>;
-  /** Persiste le quota invité (à appeler après incrementScans en mode invité) */
   persistGuestQuota: () => Promise<void>;
-  /** Met à jour le profil depuis le backend (renouvelle `plan`) */
-  updateProfileFromServer: () => Promise<any | null>;
-  /** Crée un compte et se connecte */
-  signUp: (email: string, password: string) => Promise<User | null>;
-  /** Connexion existante */
-  signIn: (email: string, password: string) => Promise<User | null>;
-  /** Déconnexion */
+  updateProfileFromServer: () => Promise<BackendProfile | null>;
+  signUp: (email: string, password: string, displayName: string) => Promise<SessionUser>;
+  signIn: (email: string, password: string) => Promise<SessionUser>;
   signOut: () => Promise<void>;
-  /** Déconnexion : efface le choix invité uniquement (le quota reste par appareil). */
   clearGuestAndReset: () => Promise<void>;
+}
+
+function planFromProfile(profile: BackendProfile | null | undefined): PlanType {
+  if (!profile) return "visitor";
+  if (profile.plan === "premium" || profile.accountType === "premium" || profile.isPremium) {
+    return "premium";
+  }
+  if (profile.plan === "free" || profile.accountType === "free") {
+    return "free";
+  }
+  return "visitor";
+}
+
+function fallbackLimit(plan: PlanType): number {
+  if (plan === "visitor") return 1;
+  if (plan === "free") return 5;
+  return 999;
+}
+
+function syncProfile(profile: BackendProfile, set: (partial: Partial<AuthState>) => void) {
+  const plan = planFromProfile(profile);
+  set({
+    plan,
+    userId: profile.uid ?? null,
+    userEmail: profile.email ?? null,
+    scansToday: typeof profile.scansUsedToday === "number" ? profile.scansUsedToday : 0,
+    lastResetDate: profile.lastQuotaResetDate ?? todayISO(),
+    scanLimit:
+      typeof profile.scanQuotaPerDay === "number" ? profile.scanQuotaPerDay : fallbackLimit(plan),
+    hasRestoredGuest: false,
+  });
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -52,57 +89,61 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   userEmail: null,
   scansToday: 0,
   lastResetDate: null,
+  scanLimit: 1,
   isHydrated: false,
   hasRestoredGuest: false,
 
   setPlan: async (plan) => {
-    set({ plan });
-    try {
-      await AsyncStorage.setItem(PLAN_KEY, plan);
-    } catch (_) {
-      // ignore
+    if (plan === "visitor") {
+      set({ plan: "visitor", scanLimit: 1 });
+      await AsyncStorage.setItem(PLAN_KEY, "visitor");
+      return;
     }
 
-    // Attempt to sync the plan with the backend
-    try {
-      if (plan === "premium") {
-        await apiFetch("/premium/activate", { method: "POST" });
-      } else {
-        await apiFetch("/premium/cancel", { method: "POST" });
-      }
-    } catch (_) {
-      // ignore backend errors
+    const response = await apiFetch<{ profile?: BackendProfile }>(
+      plan === "premium" ? "/premium/activate" : "/premium/cancel",
+      { method: "POST" }
+    );
+
+    if (response.ok && response.data?.profile) {
+      syncProfile(response.data.profile, set);
+      await AsyncStorage.setItem(PLAN_KEY, planFromProfile(response.data.profile));
+      return;
     }
+
+    set({ plan, scanLimit: fallbackLimit(plan) });
+    await AsyncStorage.setItem(PLAN_KEY, plan);
   },
 
   setGuestQuota: (scansToday, lastResetDate) =>
-    set({ scansToday, lastResetDate }),
+    set({ scansToday, lastResetDate, scanLimit: 1, plan: "visitor" }),
 
   incrementScans: () =>
-    set((s) => ({ scansToday: s.scansToday + 1 })),
+    set((state) => ({
+      scansToday: state.scansToday + 1,
+    })),
 
   canScan: () => get().scansToday < get().dailyLimit(),
 
   dailyLimit: () => {
-    const plan = get().plan;
+    const { plan, scanLimit } = get();
     if (plan === "visitor") return 1;
-    if (plan === "free") return 5;
-    return 999;
+    return scanLimit || fallbackLimit(plan);
   },
 
   hydrateFromStorage: async () => {
     try {
-      const [guest, plan] = await Promise.all([
+      const [guestChoice, token] = await Promise.all([
         AsyncStorage.getItem(GUEST_CHOICE_KEY),
-        AsyncStorage.getItem(PLAN_KEY),
+        getToken(),
       ]);
 
-      const today = todayISO();
-      let scansToday = 0;
-      let lastResetDate: string | null = null;
-
-      if (guest === "true") {
+      if (guestChoice === "true") {
         const raw = await AsyncStorage.getItem(GUEST_QUOTA_KEY);
+        const today = todayISO();
+        let scansToday = 0;
+        let lastResetDate: string | null = today;
+
         if (raw) {
           try {
             const data = JSON.parse(raw) as { scansToday: number; lastResetDate: string };
@@ -114,10 +155,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
                 GUEST_QUOTA_KEY,
                 JSON.stringify({ scansToday: 0, lastResetDate: today })
               );
-              lastResetDate = today;
             }
-          } catch (_) {
-            lastResetDate = today;
+          } catch {
             await AsyncStorage.setItem(
               GUEST_QUOTA_KEY,
               JSON.stringify({ scansToday: 0, lastResetDate: today })
@@ -127,52 +166,37 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
         set({
           plan: "visitor",
+          userId: null,
+          userEmail: null,
           scansToday,
           lastResetDate,
+          scanLimit: 1,
           isHydrated: true,
           hasRestoredGuest: true,
         });
-      } else if (plan === "free" || plan === "premium") {
-        set({ plan, isHydrated: true });
-      } else {
-        set({ isHydrated: true, hasRestoredGuest: false });
       }
 
-      // If we have a stored token, try to restore profile from backend
-      const token = await getToken();
-      if (token && !get().userId) {
-        try {
-          const response = await apiFetch("/auth/me", { method: "GET" });
-          if (response.ok) {
-            const profile = response.data.profile;
-            set({
-              userId: profile?.uid ?? null,
-              userEmail: profile?.email ?? null,
-              plan: profile?.accountType ?? get().plan,
-            });
-          }
-        } catch (_e) {
-          // ignore
-        }
+      if (token) {
+        const profile = await get().updateProfileFromServer();
+        set({ isHydrated: true });
+        return profile !== null;
       }
-      
-      // Keep user state in sync with Firebase auth if configured
-      if (auth) {
-        onAuthStateChanged(auth, (user) => {
-          if (user) {
-            set({ userId: user.uid, userEmail: user.email ?? null });
-            set((state) => ({
-              plan: state.plan === "visitor" ? "free" : state.plan,
-            }));
-          } else {
-            set({ userId: null, userEmail: null });
-          }
+
+      if (guestChoice !== "true") {
+        set({
+          plan: "visitor",
+          userId: null,
+          userEmail: null,
+          scansToday: 0,
+          lastResetDate: null,
+          scanLimit: 1,
+          isHydrated: true,
+          hasRestoredGuest: false,
         });
       }
 
-      set({ isHydrated: true });   // ← AJOUT IMPORTANT
       return true;
-    } catch (_) {
+    } catch {
       set({ isHydrated: true });
       return false;
     }
@@ -180,6 +204,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   startGuestSession: async () => {
     const today = todayISO();
+    await clearToken();
     await AsyncStorage.setItem(GUEST_CHOICE_KEY, "true");
     await AsyncStorage.removeItem(PLAN_KEY);
 
@@ -188,13 +213,31 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       try {
         const data = JSON.parse(raw) as { scansToday: number; lastResetDate: string };
         if (data.lastResetDate === today) {
-          set({ plan: "visitor", scansToday: data.scansToday, lastResetDate: today });
+          set({
+            plan: "visitor",
+            userId: null,
+            userEmail: null,
+            scansToday: data.scansToday,
+            lastResetDate: today,
+            scanLimit: 1,
+            hasRestoredGuest: true,
+          });
           return;
         }
-      } catch (_) {}
+      } catch {
+        // ignore
+      }
     }
 
-    set({ plan: "visitor", scansToday: 0, lastResetDate: today });
+    set({
+      plan: "visitor",
+      userId: null,
+      userEmail: null,
+      scansToday: 0,
+      lastResetDate: today,
+      scanLimit: 1,
+      hasRestoredGuest: true,
+    });
     await AsyncStorage.setItem(
       GUEST_QUOTA_KEY,
       JSON.stringify({ scansToday: 0, lastResetDate: today })
@@ -203,146 +246,134 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   persistGuestQuota: async () => {
     const { plan, scansToday, lastResetDate } = get();
-    if (plan !== "visitor" || lastResetDate == null) return;
+    if (plan !== "visitor" || !lastResetDate) return;
+
     try {
       await AsyncStorage.setItem(
         GUEST_QUOTA_KEY,
         JSON.stringify({ scansToday, lastResetDate })
       );
-    } catch (_) {}
+    } catch {
+      // ignore
+    }
   },
 
-  async updateProfileFromServer() {
+  updateProfileFromServer: async () => {
     try {
-      const response = await apiFetch("/auth/me", { method: "GET" });
-
-      console.log("PROFILE RESPONSE:", response);
-
-      if (!response.ok) {
-        console.log("PROFILE NOT FOUND");
+      const response = await apiFetch<{ profile: BackendProfile }>("/auth/me", { method: "GET" });
+      if (!response.ok || !response.data?.profile) {
         return null;
       }
 
-      const profile = response.data?.profile ?? response.data;
-
-      if (!profile) {
-        console.log("PROFILE EMPTY");
-        return null;
-      }
-
-      // 🔑 lire le plan depuis différentes clés possibles
-      const plan: PlanType =
-        profile.plan ||
-        profile.accountType ||
-        (profile.isPremium ? "premium" : "free");
-
-      console.log("PLAN FROM SERVER:", plan);
-
-      set({
-        userId: profile.uid ?? profile.id ?? null,
-        userEmail: profile.email ?? null,
-        plan,
-      });
-
-      await AsyncStorage.setItem(PLAN_KEY, plan);
+      const profile = response.data.profile;
+      syncProfile(profile, set);
+      await AsyncStorage.removeItem(GUEST_CHOICE_KEY);
+      await AsyncStorage.setItem(PLAN_KEY, planFromProfile(profile));
 
       return profile;
-    } catch (err) {
-      console.log("PROFILE FETCH ERROR:", err);
+    } catch {
       return null;
     }
   },
 
-  signUp: async (email: string, password: string) => {
-    try {
-      // Call backend to create account + profile
-      const response = await apiFetch("/auth/register", {
+  signUp: async (email, password, displayName) => {
+    const response = await apiFetch<{ idToken?: string; token?: string; profile?: BackendProfile }>(
+      "/auth/register",
+      {
         method: "POST",
-        body: JSON.stringify({ email, password, displayName: email }),
-      });
-      if (!response.ok) return null;
-
-      const { token } = response.data;
-      if (token) await setToken(token);
-
-      const profile = await get().updateProfileFromServer();
-
-      if (!profile) {
-        // fallback si le profil n'existe pas encore
-        return { email } as unknown as User;
+        body: JSON.stringify({ email, password, displayName }),
       }
+    );
 
-      return profile as unknown as User;
-    } catch (_) {
-      return null;
+    if (!response.ok) {
+      throw new Error(response.error || "Impossible de creer le compte");
     }
+
+    const token = response.data?.idToken ?? response.data?.token;
+    if (!token) {
+      throw new Error("Le serveur n'a pas retourne de session valide");
+    }
+
+    await setToken(token);
+
+    const profile = response.data?.profile ?? (await get().updateProfileFromServer());
+    if (!profile) {
+      throw new Error("Le profil utilisateur n'a pas pu etre recupere");
+    }
+
+    return {
+      uid: profile.uid,
+      email: profile.email ?? email,
+    };
   },
 
-  signIn: async (email: string, password: string) => {
-    try {
-      const response = await apiFetch("/auth/login", {
+  signIn: async (email, password) => {
+    const response = await apiFetch<{ idToken?: string; token?: string; profile?: BackendProfile }>(
+      "/auth/login",
+      {
         method: "POST",
         body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        console.log("LOGIN ERROR:", response);
-        return null;
       }
+    );
 
-      const { idToken, uid, plan } = response.data;
-
-      if (idToken) {
-        await setToken(idToken);
-      }
-
-      // 🔄 récupérer le profil depuis Firestore via le backend
-      let profile = await get().updateProfileFromServer();
-
-      if (!profile) {
-        console.log("Profile not found, creating local session");
-
-        const userPlan = plan ?? "free";
-
-        set({
-          userId: uid,
-          userEmail: email,
-          plan: userPlan,
-        });
-
-        await AsyncStorage.setItem(PLAN_KEY, userPlan);
-
-        return { uid, email } as unknown as User;
-      }
-
-      return profile as unknown as User;
-    } catch (err) {
-      console.log("SIGNIN ERROR:", err);
-      return null;
+    if (!response.ok) {
+      throw new Error(response.error || "Impossible de se connecter");
     }
+
+    const token = response.data?.idToken ?? response.data?.token;
+    if (!token) {
+      throw new Error("Le serveur n'a pas retourne de session valide");
+    }
+
+    await setToken(token);
+
+    const profile = response.data?.profile ?? (await get().updateProfileFromServer());
+    if (!profile) {
+      throw new Error("Le profil utilisateur n'a pas pu etre recupere");
+    }
+
+    return {
+      uid: profile.uid,
+      email: profile.email ?? email,
+    };
   },
 
   signOut: async () => {
     try {
-      await clearToken();
-      await auth?.signOut();
-    } catch (_) {
+      await apiFetch("/auth/logout", { method: "POST" });
+    } catch {
       // ignore
     }
-    set({ userId: null, userEmail: null, plan: "visitor" });
+
+    await clearToken();
     await AsyncStorage.removeItem(PLAN_KEY);
+
+    set({
+      plan: "visitor",
+      userId: null,
+      userEmail: null,
+      scansToday: 0,
+      lastResetDate: null,
+      scanLimit: 1,
+      hasRestoredGuest: false,
+    });
   },
 
   clearGuestAndReset: async () => {
     try {
       await AsyncStorage.removeItem(GUEST_CHOICE_KEY);
       await AsyncStorage.removeItem(PLAN_KEY);
-      // On ne supprime pas GUEST_QUOTA_KEY : le quota reste lié à l'appareil pour la journée
-    } catch (_) {}
+    } catch {
+      // ignore
+    }
+
     set({
       plan: "visitor",
+      userId: null,
+      userEmail: null,
       scansToday: 0,
       lastResetDate: null,
+      scanLimit: 1,
       hasRestoredGuest: false,
     });
   },

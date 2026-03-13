@@ -10,15 +10,15 @@ import { useAuthStore } from "../../store/authStore";
 export default function Settings() {
   const router = useRouter();
   const { plan, scansToday, dailyLimit, clearGuestAndReset, setPlan, userEmail, signOut } = useAuthStore();
-  console.log("PLAN:", plan);
+
   const handleReset = async () => {
     Alert.alert(
-      "Réinitialiser la session",
-      "Cela effacera votre session invité et réinitialisera le compteur de scans.",
+      "Reinitialiser la session",
+      "Cela effacera votre session visiteur et remettra l'etat local a zero.",
       [
         { text: "Annuler", style: "cancel" },
         {
-          text: "Réinitialiser",
+          text: "Reinitialiser",
           style: "destructive",
           onPress: async () => {
             await clearGuestAndReset();
@@ -29,20 +29,15 @@ export default function Settings() {
   };
 
   const upgradeToPremium = async () => {
-
-    // Bloquer les visiteurs
     if (plan === "visitor") {
-      Alert.alert(
-        "Fonction Premium",
-        "Vous devez créer un compte pour accéder à Premium."
-      );
+      Alert.alert("Fonction Premium", "Vous devez creer un compte pour acceder a Premium.");
       router.push("/login");
       return;
     }
 
     Alert.alert(
       "Passer Premium",
-      "Ce passage débloque l'historique, la caméra d'inspection et un quota illimité.",
+      "Cela debloque l'historique cloud, l'inspection camera et des scans quasi illimites.",
       [
         { text: "Annuler", style: "cancel" },
         {
@@ -55,37 +50,40 @@ export default function Settings() {
     );
   };
 
-  const switchToFree = async () => {
-    await setPlan("free");
-  };
-
   return (
     <ScreenLayout>
-      <SRHeader title="Paramètres" subtitle="Gérez votre session et votre quota" />
-      
-      {plan === "premium" && (
+      <SRHeader title="Parametres" subtitle="Gerez votre session, votre quota et votre plan" />
+
+      {plan === "premium" ? (
         <SRCard style={{ marginBottom: 20 }}>
           <Text style={{ fontSize: 16, fontWeight: "600", color: "#16A34A" }}>
             Compte Premium actif
           </Text>
           <Text style={{ marginTop: 6 }}>
-            Historique illimité, inspection caméra et aucune publicité.
+            Historique cloud, inspection visuelle et publicites desactivees.
           </Text>
         </SRCard>
-      )}
+      ) : null}
 
       <SRCard style={{ marginBottom: 20 }}>
         <Text style={{ fontSize: 16, fontWeight: "600", marginBottom: 8 }}>Compte</Text>
         {userEmail ? (
           <>
-            <Text style={{ fontSize: 14, color: "#334155" }}>Connecté en tant que</Text>
+            <Text style={{ fontSize: 14, color: "#334155" }}>Connecte en tant que</Text>
             <Text style={{ fontSize: 14, color: "#334155", marginBottom: 12 }}>{userEmail}</Text>
-            <SRButton label="Se déconnecter" variant="secondary" onPress={signOut} />
+            <SRButton
+              label="Se deconnecter"
+              variant="secondary"
+              onPress={async () => {
+                await signOut();
+                router.replace("/login");
+              }}
+            />
           </>
         ) : (
           <>
             <Text style={{ fontSize: 14, color: "#334155", marginBottom: 12 }}>
-              Connectez-vous pour conserver vos scans et accéder à votre historique.
+              Connectez-vous pour synchroniser vos scans et gerer votre plan.
             </Text>
             <SRButton label="Se connecter" onPress={() => router.replace("/login")} />
           </>
@@ -96,18 +94,17 @@ export default function Settings() {
         <Text style={{ fontSize: 16, fontWeight: "600", marginBottom: 8 }}>Votre plan</Text>
         <Text style={{ fontSize: 14, color: "#334155" }}>Type : {plan}</Text>
         <Text style={{ fontSize: 14, color: "#334155" }}>
-          Scans aujourd’hui : {scansToday} / {dailyLimit()}
+          Scans aujourd'hui : {scansToday} / {dailyLimit()}
         </Text>
       </SRCard>
 
       {plan === "free" ? (
         <SRCard style={{ marginBottom: 20 }}>
           <Text style={{ fontSize: 16, fontWeight: "600", marginBottom: 8 }}>
-            Déverrouillez plus de fonctionnalités
+            Debloquez plus de fonctionnalites
           </Text>
           <Text style={{ fontSize: 14, color: "#334155", marginBottom: 16 }}>
-            Passez Premium pour conserver l’historique, accéder à la caméra d’inspection et
-            supprimer les publicités.
+            Passez Premium pour conserver vos rapports, acceder a la camera d'inspection et supprimer les publicites.
           </Text>
           <SRButton label="Passer Premium" variant="primary" onPress={upgradeToPremium} />
         </SRCard>
@@ -115,18 +112,17 @@ export default function Settings() {
 
       <SRCard style={{ marginBottom: 20 }}>
         <Text style={{ fontSize: 16, fontWeight: "600", marginBottom: 8 }}>
-          Besoin d’un nouveau départ ?
+          Besoin d'un nouveau depart ?
         </Text>
         <Text style={{ fontSize: 14, color: "#334155", marginBottom: 16 }}>
-          Réinitialise la session invité (le quota par appareil est conservé pour la journée).
+          Reinitialise l'etat visiteur local. Le quota cloud des comptes connectes reste gere par le backend.
         </Text>
-        <SRButton label="Réinitialiser la session" variant="secondary" onPress={handleReset} />
+        <SRButton label="Reinitialiser la session" variant="secondary" onPress={handleReset} />
       </SRCard>
 
       <SRCard>
         <Text style={{ fontSize: 14, color: "#334155" }}>
-          SafeRoom est une application de démonstration. Les résultats sont basés sur des
-          données simulées et ne remplacent pas un audit de sécurité réel.
+          SafeRoom reste un assistant d'inspection. Les rapports aident a verifier une chambre, sans garantir une detection absolue.
         </Text>
       </SRCard>
 
